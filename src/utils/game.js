@@ -19,7 +19,21 @@ const VALUES = [
 export class Game {
   constructor() {
     this.deck = new newDeck().sort(() => Math.random() - 0.5)
-    this.currentHand = 1
+    this.dealer = 'bot'
+    this.currentHand = { user: { hand: [] }, bot: { hand: [] } }
+  }
+
+  dealHand() {
+    this.dealer = this.dealer === 'bot' ? 'user' : 'bot'
+    for (let i = 0; i < 6; i++) {
+      if (this.dealer === 'bot') {
+        this.currentHand.user.hand.push(this.deck.shift())
+        this.currentHand.bot.hand.push(this.deck.shift())
+      } else {
+        this.currentHand.bot.hand.push(this.deck.shift())
+        this.currentHand.user.hand.push(this.deck.shift())
+      }
+    }
   }
 }
 
