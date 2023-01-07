@@ -1,5 +1,5 @@
 <template>
-  <div class="w-40 border rounded-md border-neutral-600 h-60">
+  <div class="w-[130px] border rounded-md border-neutral-600 h-[180px]">
     <div class="w-full h-full border-8 border-white rounded-md">
       <div
         style="

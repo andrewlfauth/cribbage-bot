@@ -31,7 +31,7 @@ const handleClick = () => {
   <div
     :style="isSelectedForCrib && 'transform: scale(1.1);'"
     @click="handleClick"
-    class="relative flex items-center justify-center w-40 p-4 bg-white border border-black rounded-md h-60 origin-bottom duration-100"
+    class="relative flex items-center justify-center w-[130px] p-4 bg-white border border-black rounded-md h-[180px] origin-bottom duration-100"
   >
     <span :style="color" class="absolute text-3xl top-12 left-4">{{
       props.card.suit

@@ -7,7 +7,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="flex mx-auto -space-x-20">
+  <div class="flex mx-auto -space-x-14">
     <CardBack v-for="card in cardsInHand" :key="card" />
   </div>
 </template>
