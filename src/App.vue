@@ -3,15 +3,14 @@ import { ref } from 'vue'
 import Card from './components/Card.vue'
 import GameView from './components/GameView/GameView.vue'
 import NewGameButton from './components/NewGameButton.vue'
-import { Game } from './utils/game'
+import { game, dealHand } from './stores/game'
 
 const currentGame = ref(null)
-const currentHand = ref()
 
 const startNewGame = () => {
-  currentGame.value = new Game()
-  currentGame.value.dealHand()
-  currentHand.value = currentGame.value.currentHand
+  currentGame.value = true
+  dealHand()
+  console.log(game.currentHand.bot.hand)
 }
 </script>
 
@@ -26,7 +25,7 @@ const startNewGame = () => {
       <NewGameButton @new-game="startNewGame" />
     </div>
     <div v-else>
-      <GameView :current-hand="currentHand" />
+      <GameView :current-hand="game.currentHand" />
     </div>
   </main>
 </template>
