@@ -4,7 +4,12 @@ import { SUITS, VALUES } from '../data/cards'
 export const game = reactive({
   deck: newDeck().sort(() => Math.random() - 0.5),
   dealer: 'bot',
-  currentHand: { user: { hand: [] }, bot: { hand: [] } },
+  currentHand: {
+    user: { hand: [], selectedForCrib: [] },
+    bot: { hand: [], selectedForCrib: [] },
+    stage: 'discard',
+    crib: [],
+  },
 })
 
 function newDeck() {
@@ -14,7 +19,13 @@ function newDeck() {
 export function dealHand() {
   game.dealer = game.dealer === 'bot' ? 'user' : 'bot'
 
-  game.currentHand = { user: { hand: [] }, bot: { hand: [] } }
+  game.currentHand = {
+    user: { hand: [], selectedForCrib: [] },
+    bot: { hand: [], selectedForCrib: [] },
+    stage: 'discard',
+    crib: [],
+  }
+
   for (let i = 0; i < 6; i++) {
     if (game.dealer === 'bot') {
       game.currentHand.user.hand.push(game.deck.shift())
@@ -24,4 +35,8 @@ export function dealHand() {
       game.currentHand.user.hand.push(game.deck.shift())
     }
   }
+}
+
+export function assignToCrib(cards) {
+  game.currentHand.crib.push(cards)
 }

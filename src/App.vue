@@ -10,7 +10,6 @@ const currentGame = ref(null)
 const startNewGame = () => {
   currentGame.value = true
   dealHand()
-  console.log(game.currentHand.bot.hand)
 }
 </script>
 
