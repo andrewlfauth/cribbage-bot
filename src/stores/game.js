@@ -1,5 +1,7 @@
 import { reactive } from 'vue'
 import { SUITS, VALUES } from '../data/cards'
+import { getBotCribCards } from '../utils/bot'
+import { objectsEqual } from '../utils/helpers'
 
 export const game = reactive({
   deck: newDeck().sort(() => Math.random() - 0.5),
@@ -13,7 +15,21 @@ export const game = reactive({
 })
 
 function newDeck() {
-  return SUITS.flatMap((suit) => VALUES.map((value) => ({ suit, value })))
+  const preCount = SUITS.flatMap((suit) =>
+    VALUES.map((value) => ({ suit, value }))
+  )
+  return preCount.map((card) => {
+    switch (card.value) {
+      case 'A':
+        return { ...card, count: 1 }
+      case 'J':
+      case 'Q':
+      case 'K':
+        return { ...card, count: 10 }
+      default:
+        return { ...card, count: parseInt(card.value) }
+    }
+  })
 }
 
 export function dealHand() {
@@ -37,6 +53,29 @@ export function dealHand() {
   }
 }
 
-export function assignToCrib(cards) {
-  game.currentHand.crib.push(cards)
+export function assignToCrib(userCards) {
+  userCards.forEach((card) => {
+    game.currentHand.crib.push(card)
+    removeCardFromUsersHand(card)
+  })
+
+  const cribCards = getBotCribCards(game.currentHand.bot.hand)
+  cribCards.forEach((card) => {
+    game.currentHand.crib.push(card)
+    removeCardFromBotsHand(card)
+  })
+
+  game.currentHand.stage = 'peg'
+}
+
+function removeCardFromUsersHand(card) {
+  game.currentHand.user.hand = game.currentHand.user.hand.filter(
+    (c) => !objectsEqual(c, card)
+  )
+}
+
+function removeCardFromBotsHand(card) {
+  game.currentHand.bot.hand = game.currentHand.bot.hand.filter(
+    (c) => !objectsEqual(c, card)
+  )
 }

@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import Card from './components/Card.vue'
 import GameView from './components/GameView/GameView.vue'
 import NewGameButton from './components/NewGameButton.vue'
 import { game, dealHand } from './stores/game'

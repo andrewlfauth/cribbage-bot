@@ -31,7 +31,7 @@ const handleCribSelection = (card) => {
 }
 
 const handleAssignToCrib = () => {
-  assignToCrib(selectedForCrib)
+  assignToCrib(selectedForCrib.value)
   selectedForCrib.value = []
 }
 </script>
@@ -42,13 +42,8 @@ const handleAssignToCrib = () => {
       @select-for-crib="handleCribSelection"
       v-for="card in cardsInHand"
       :key="card"
-      :suit="card.suit"
-      :value="card.value"
-      :is-selected-for-crib="
-        selectedForCrib.some((c) =>
-          objectsEqual(c, { suit: card.suit, value: card.value })
-        )
-      "
+      :card="card"
+      :is-selected-for-crib="selectedForCrib.some((c) => objectsEqual(c, card))"
     />
   </div>
   <div v-if="game.currentHand.stage === 'discard'" class="mt-10">
