@@ -1,5 +1,6 @@
 <script setup>
 import ComputersHand from './ComputersHand.vue'
+import Deck from './Deck.vue'
 import PlayersHand from './PlayersHand.vue'
 import TheCrib from './TheCrib.vue'
 
@@ -13,6 +14,7 @@ const props = defineProps({
     class="flex flex-col items-center justify-between h-screen p-4 select-none"
   >
     <ComputersHand :cards-in-hand="currentHand.bot.hand" />
+    <Deck />
     <PlayersHand :cards-in-hand="currentHand.user.hand" />
     <TheCrib />
   </div>

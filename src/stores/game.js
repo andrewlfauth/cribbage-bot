@@ -11,6 +11,7 @@ export const game = reactive({
     bot: { hand: [], selectedForCrib: [] },
     stage: 'discard',
     crib: [],
+    cutCard: {},
   },
 })
 
@@ -46,6 +47,7 @@ export function dealHand() {
     bot: { hand: [], selectedForCrib: [] },
     stage: 'discard',
     crib: [],
+    cutCard: {},
   }
 
   for (let i = 0; i < 6; i++) {
@@ -71,7 +73,14 @@ export function assignToCrib(userCards) {
     removeCardFromBotsHand(card)
   })
 
+  startPeggingStage()
+}
+
+function startPeggingStage() {
   game.currentHand.stage = 'peg'
+  const cutCard = game.deck[Math.floor(Math.random() * 40)]
+
+  game.currentHand.cutCard = cutCard
 }
 
 function removeCardFromUsersHand(card) {
