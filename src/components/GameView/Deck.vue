@@ -5,8 +5,8 @@ import { game } from '../../stores/game'
 </script>
 
 <template>
-  <div class="float-right w-full">
-    <div class="w-fit float-right text-center font-medium relative">
+  <div>
+    <div class="w-fit text-center font-medium relative">
       <CardBack />
       <div
         v-if="game.currentHand.stage === 'peg' && game.currentHand.cutCard"
