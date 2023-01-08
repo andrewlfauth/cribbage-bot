@@ -13,6 +13,12 @@ export const game = reactive({
     crib: [],
     cutCard: {},
   },
+  pegging: {
+    count: 0,
+    cards: [],
+    turn: 'bot',
+    go: 0,
+  },
 })
 
 function newDeck() {
