@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { objectsEqual } from '../../utils/helpers'
 import { assignToCrib, game } from '../../stores/game'
 import Card from '../Card.vue'
@@ -7,6 +7,10 @@ import Card from '../Card.vue'
 const props = defineProps({
   cardsInHand: Array,
 })
+
+const cardsInOrder = computed(() =>
+  props.cardsInHand.sort((a, b) => a.order - b.order)
+)
 
 const selectedForCrib = ref([])
 
@@ -53,7 +57,7 @@ const handleAssignToCrib = () => {
     <div class="flex -space-x-14">
       <Card
         @select-for-crib="handleCribSelection"
-        v-for="card in cardsInHand"
+        v-for="card in cardsInOrder"
         :key="card"
         :card="card"
         :is-selected-for-crib="

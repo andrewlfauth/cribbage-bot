@@ -21,13 +21,19 @@ function newDeck() {
   return preCount.map((card) => {
     switch (card.value) {
       case 'A':
-        return { ...card, count: 1 }
+        return { ...card, count: 1, order: 1 }
       case 'J':
+        return { ...card, count: 10, order: 11 }
       case 'Q':
+        return { ...card, count: 10, order: 12 }
       case 'K':
-        return { ...card, count: 10 }
+        return { ...card, count: 10, order: 13 }
       default:
-        return { ...card, count: parseInt(card.value) }
+        return {
+          ...card,
+          count: parseInt(card.value),
+          order: parseInt(card.value),
+        }
     }
   })
 }
