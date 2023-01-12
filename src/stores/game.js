@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 import { SUITS, VALUES } from '../data/cards'
 import { getBotCribCards } from '../utils/bot'
-import { objectsEqual } from '../utils/helpers'
+import { objectsEqual, sleep } from '../utils/helpers'
 
 export const game = reactive({
   deck: newDeck().sort(() => Math.random() - 0.5),
@@ -88,65 +88,37 @@ export function startPeggingStage() {
   else game.pegging.turn = 'bot'
   const cutCard = game.deck[Math.floor(Math.random() * 40)]
   game.currentHand.cutCard = cutCard
-  if (game.pegging.turn === 'user') usersTurn()
-  else botsTurn()
+  peggingTurn(game.pegging.turn)
 }
 
-function botsTurn() {
+async function peggingTurn(player) {
   if (endOfPegging()) {
-    console.log('end of pegging')
+    await sleep(1)
     game.currentHand.stage = 'count'
     return
   }
-  if (!game.currentHand.bot.hand?.length) {
-    console.log('bot is out')
+  if (!game.currentHand[player].hand?.length) {
     game.pegging.opponent = 'out'
-    return usersTurn()
+    return peggingTurn(player)
   }
   if (checkForGo()) {
-    console.log('bots a go')
-    return handleGo(botsTurn)
+    return handleGo()
   }
-  console.log('bot plays card')
-  playCard()
+  if (game.pegging.turn === 'bot') playCard()
+  else game.pegging.waitForUserCard = true
 }
 
-function usersTurn() {
-  console.log('users Turn')
-  if (endOfPegging()) {
-    console.log('end of pegging')
-    game.currentHand.stage = 'count'
-    return
-  }
-  if (!game.currentHand.user.hand?.length) {
-    console.log('user is out')
-    game.pegging.opponent = 'out'
-    return botsTurn()
-  }
-  if (checkForGo()) {
-    console.log('user is a go')
-    return handleGo(usersTurn)
-  }
-  console.log('user plays a card')
-  game.pegging.waitForUserCard = true
-}
-
-function handleGo(playAgain) {
-  console.log('handling go')
-  // dub go
+async function handleGo() {
   if (game.pegging.opponent === 'go') {
-    console.log('opponent a go, reset, switch turns')
+    await sleep(1)
     resetPegging()
     return switchTurns()
   }
-  // oppoent out of cards
   if (game.pegging.opponent === 'out') {
-    console.log(game.pegging.opponent)
-    console.log('opponent out, reset, play again')
+    await sleep(1)
     resetPegging()
-    return playAgain()
+    return peggingTurn(game.pegging.turn)
   }
-  console.log('switching turns')
   game.pegging.opponent = 'go'
   return switchTurns()
 }
@@ -155,7 +127,7 @@ export async function playCard(card) {
   let player = game.pegging.turn
   if (!card) {
     card = getBotsCard()
-    await new Promise((res) => setTimeout(res, 1000))
+    await sleep(1)
     removeCardFromBotsHand(card)
   } else {
     removeCardFromUsersHand(card)
@@ -163,13 +135,16 @@ export async function playCard(card) {
   game.pegging.cards.push(card)
   game.pegging.count += card.count
   if (game.pegging.count === 31) {
-    await new Promise((res) => setTimeout(res, 1000))
+    await sleep(1)
     resetPegging()
+    return switchTurns()
   }
-  game.pegging.waitForUserCard = false
   if (!game.currentHand[player].hand?.length) {
     game.pegging.opponent = 'out'
+  } else {
+    game.pegging.opponent = ''
   }
+
   switchTurns()
 }
 
@@ -199,13 +174,13 @@ function endOfPegging() {
 }
 
 function switchTurns() {
+  game.pegging.waitForUserCard = false
   if (game.pegging.turn === 'bot') game.pegging.turn = 'user'
   else game.pegging.turn = 'bot'
-  if (game.pegging.turn === 'bot') botsTurn()
-  else usersTurn()
+  peggingTurn(game.pegging.turn)
 }
 
-function resetPegging() {
+async function resetPegging() {
   game.pegging.count = 0
   game.pegging.cards = []
   game.pegging.opponent = ''
