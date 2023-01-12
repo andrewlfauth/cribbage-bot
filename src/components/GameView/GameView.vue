@@ -16,13 +16,17 @@ const props = defineProps({
   <div
     class="flex flex-col items-center justify-between h-screen p-4 select-none"
   >
-    <ComputersHand :cards-in-hand="currentHand.bot.hand" />
-    <div class="flex w-full justify-between items-center">
-      <Score />
-      <Pegging v-if="game.currentHand.stage === 'peg'" />
-      <Deck />
+    <Score />
+    <div class="h-[180px]">
+      <ComputersHand :cards-in-hand="currentHand.bot.hand" />
     </div>
-    <PlayersHand :cards-in-hand="currentHand.user.hand" />
-    <TheCrib />
+    <div class="flex w-full">
+      <Deck />
+      <Pegging v-if="game.currentHand.stage === 'peg'" />
+    </div>
+    <div class="min-h-[180px]">
+      <PlayersHand :cards-in-hand="currentHand.user.hand" />
+      <TheCrib />
+    </div>
   </div>
 </template>

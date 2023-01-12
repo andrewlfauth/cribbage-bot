@@ -10,7 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative w-[700px] h-[180px] border border-white rounded-md">
+  <div class="relative ml-[250px] w-fit h-[180px] rounded-md">
     <GoIndicator
       :show="
         (game.pegging.turn === 'user' && game.pegging.opponent === 'go') ||
@@ -18,7 +18,7 @@ onMounted(() => {
       "
       :player="'bot'"
     />
-    <div class="flex -space-x-8">
+    <div class="flex -space-x-20">
       <Card v-for="card in game.pegging.cards" :card="card" />
     </div>
     <div
