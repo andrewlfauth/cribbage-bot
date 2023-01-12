@@ -16,6 +16,7 @@ export const game = reactive({
   pegging: {
     count: 0,
     cards: [],
+    spentCards: [],
     turn: 'bot',
     opponent: '',
     doubleGo: false,
@@ -183,6 +184,7 @@ function switchTurns() {
 }
 
 async function resetPegging() {
+  game.pegging.spentCards = game.pegging.spentCards.concat(game.pegging.cards)
   game.pegging.count = 0
   game.pegging.cards = []
   game.pegging.opponent = ''

@@ -46,11 +46,12 @@ const handleClick = () => {
 
     <span :style="color" class="text-8xl">{{ props.card.suit }}</span>
 
-    <span class="absolute text-5xl font-bold top-1 left-2">{{
+    <span class="absolute text-5xl font-bold top-1 left-2 tracking-tighter">{{
       props.card.value
     }}</span>
-    <span class="absolute text-5xl font-bold rotate-180 bottom-1 right-2">{{
-      props.card.value
-    }}</span>
+    <span
+      class="absolute text-5xl font-bold rotate-180 bottom-1 right-2 tracking-tighter"
+      >{{ props.card.value }}</span
+    >
   </div>
 </template>
