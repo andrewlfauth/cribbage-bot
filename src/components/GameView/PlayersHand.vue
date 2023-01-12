@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { objectsEqual } from '../../utils/helpers'
-import { assignToCrib, game } from '../../stores/game'
+import { assignToCrib, game, playCard } from '../../stores/game'
 import Card from '../Card.vue'
 
 const props = defineProps({
@@ -13,6 +13,7 @@ const cardsInOrder = computed(() =>
 )
 
 const selectedForCrib = ref([])
+let showGo = ref(false)
 
 const handleCribSelection = (card) => {
   const alreadySelected = selectedForCrib.value.some((c) =>
@@ -41,7 +42,7 @@ const handleAssignToCrib = () => {
 </script>
 
 <template>
-  <div class="text-center">
+  <div class="text-center relative">
     <div v-if="game.currentHand.stage === 'discard'" class="mb-4">
       <button
         v-if="selectedForCrib.length === 2"
@@ -54,9 +55,18 @@ const handleAssignToCrib = () => {
         >Select 2 cards for the crib</span
       >
     </div>
+
+    <div
+      v-if="showGo"
+      class="text-2xl font-semibold px-6 py-2 rounded-md bg-gradient-to-b from-pink-400 to-purple-300 border-2 border-black absolute top-44 mt-4"
+    >
+      Go
+    </div>
+
     <div class="flex -space-x-14">
       <Card
         @select-for-crib="handleCribSelection"
+        @select-for-peg="playCard"
         v-for="card in cardsInOrder"
         :key="card"
         :card="card"

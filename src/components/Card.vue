@@ -7,22 +7,24 @@ const props = defineProps({
   isSelectedForCrib: Boolean,
 })
 
-// const card = { suit: props.card.suit, value: props.value, count: props.count }
-
 const color = ref(
   props.card.suit === '♥' || props.card.suit === '♦'
     ? 'color: red;'
     : 'color: black;'
 )
 
-const emit = defineEmits(['selectForCrib'])
+const emit = defineEmits(['selectForCrib', 'selectForPeg'])
 
 const handleClick = () => {
-  switch (game.currentHand.stage) {
-    case 'discard':
-      return emit('selectForCrib', props.card)
-    default:
-      return
+  if (game.currentHand.stage === 'discard') {
+    return emit('selectForCrib', props.card)
+  }
+  if (
+    game.currentHand.stage === 'peg' &&
+    game.pegging.waitForUserCard &&
+    props.card.count <= 31 - game.pegging.count
+  ) {
+    emit('selectForPeg', props.card)
   }
 }
 </script>

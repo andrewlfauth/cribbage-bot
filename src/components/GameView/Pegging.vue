@@ -1,13 +1,21 @@
 <script setup>
-import { ref } from 'vue'
-import { game } from '../../stores/game'
+import { watchEffect, watch, onMounted } from 'vue'
+import { game, startPeggingStage } from '../../stores/game'
 import Card from '../Card.vue'
 
-const turn = ref(game.dealer === 'bot' ? 'user' : 'bot')
+onMounted(() => {
+  startPeggingStage()
+})
 </script>
 
 <template>
-  <div class="relative w-[700px] h-[200px] border border-white rounded-md">
+  <p class="absolute top-12 left-0 font-semibold pl-2">
+    {{ game.pegging.turn }}'s turn
+  </p>
+  <p class="absolute top-0 left-0 font-semibold pl-2">
+    {{ game.pegging.opponent }}
+  </p>
+  <div class="relative w-[700px] h-[180px] border border-white rounded-md">
     <div class="flex -space-x-8">
       <Card v-for="card in game.pegging.cards" :card="card" />
     </div>
