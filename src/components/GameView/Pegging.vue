@@ -12,7 +12,10 @@ onMounted(() => {
 <template>
   <div class="relative w-[700px] h-[180px] border border-white rounded-md">
     <GoIndicator
-      :show="game.pegging.turn === 'user' && game.pegging.opponent === 'go'"
+      :show="
+        (game.pegging.turn === 'user' && game.pegging.opponent === 'go') ||
+        game.pegging.doubleGo
+      "
       :player="'bot'"
     />
     <div class="flex -space-x-8">
@@ -25,7 +28,10 @@ onMounted(() => {
       <span class="text-4xl font-semibold">{{ game.pegging.count }}</span>
     </div>
     <GoIndicator
-      :show="game.pegging.turn === 'bot' && game.pegging.opponent === 'go'"
+      :show="
+        (game.pegging.turn === 'bot' && game.pegging.opponent === 'go') ||
+        game.pegging.doubleGo
+      "
       :player="'user'"
     />
   </div>

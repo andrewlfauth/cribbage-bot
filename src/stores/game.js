@@ -18,6 +18,7 @@ export const game = reactive({
     cards: [],
     turn: 'bot',
     opponent: '',
+    doubleGo: false,
     waitForUserCard: false,
   },
 })
@@ -110,6 +111,7 @@ async function peggingTurn(player) {
 
 async function handleGo() {
   if (game.pegging.opponent === 'go') {
+    game.pegging.doubleGo = true
     await sleep(1)
     resetPegging()
     return switchTurns()
@@ -184,6 +186,7 @@ async function resetPegging() {
   game.pegging.count = 0
   game.pegging.cards = []
   game.pegging.opponent = ''
+  game.pegging.doubleGo = false
 }
 
 function getOppenentsHand(player) {
