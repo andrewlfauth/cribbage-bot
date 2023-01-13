@@ -6,6 +6,7 @@ import { objectsEqual, sleep } from '../utils/helpers'
 export const game = reactive({
   deck: newDeck().sort(() => Math.random() - 0.5),
   dealer: 'bot',
+  score: { user: 0, bot: 0 },
   currentHand: {
     user: { hand: [], selectedForCrib: [] },
     bot: { hand: [], selectedForCrib: [] },
@@ -115,6 +116,7 @@ async function handleGo() {
     game.pegging.doubleGo = true
     await sleep(1)
     resetPegging()
+    awardPoints(1)
     return switchTurns()
   }
   if (game.pegging.opponent === 'out') {
@@ -135,8 +137,9 @@ export async function playCard(card) {
   } else {
     removeCardFromUsersHand(card)
   }
-  game.pegging.cards.push(card)
   game.pegging.count += card.count
+  checkForPegPoints(card)
+  game.pegging.cards.push(card)
   if (game.pegging.count === 31) {
     await sleep(1)
     resetPegging()
@@ -149,6 +152,25 @@ export async function playCard(card) {
   }
 
   switchTurns()
+}
+
+function checkForPegPoints(card) {
+  let { value } = card
+  let cards = [...game.pegging.cards].map((c) => c.order)
+
+  // 15
+  if (game.pegging.count == 15 || game.pegging.count == 31) {
+    awardPoints(2)
+  }
+
+  // pair
+  let pairs = 0
+  while (cards.length) {
+    if (cards.pop().value == value) pairs += 1
+  }
+  if (pairs) {
+    return awardPoints(pairs * (pairs + 1))
+  }
 }
 
 function getBotsCard() {
@@ -191,9 +213,9 @@ async function resetPegging() {
   game.pegging.doubleGo = false
 }
 
-function getOppenentsHand(player) {
-  if (player === 'bot') return game.currentHand.user.hand
-  else return game.currentHand.bot.hand
+function awardPoints(points, player) {
+  if (!player) player = game.pegging.turn
+  game.score[player] += points
 }
 
 function removeCardFromUsersHand(card) {
