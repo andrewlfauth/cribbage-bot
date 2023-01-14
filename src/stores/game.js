@@ -2,6 +2,7 @@ import { reactive } from 'vue'
 import { SUITS, VALUES } from '../data/cards'
 import { getBotCribCards } from '../utils/bot'
 import { objectsEqual, sleep } from '../utils/helpers'
+import { awardPoints, checkForPegPoints } from '../utils/scoring'
 
 export const game = reactive({
   deck: newDeck().sort(() => Math.random() - 0.5),
@@ -102,7 +103,7 @@ async function peggingTurn(player) {
   }
   if (!game.currentHand[player].hand?.length) {
     game.pegging.opponent = 'out'
-    return peggingTurn(player)
+    return switchTurns()
   }
   if (checkForGo()) {
     return handleGo()
@@ -130,6 +131,7 @@ async function handleGo() {
 
 export async function playCard(card) {
   let player = game.pegging.turn
+
   if (!card) {
     card = getBotsCard()
     await sleep(1)
@@ -138,39 +140,31 @@ export async function playCard(card) {
     removeCardFromUsersHand(card)
   }
   game.pegging.count += card.count
-  checkForPegPoints(card)
   game.pegging.cards.push(card)
+  checkForPegPoints()
+  if (
+    game.pegging.opponent === 'go' &&
+    checkForGo() &&
+    game.pegging.count != 31
+  ) {
+    awardPoints(1)
+  }
   if (game.pegging.count === 31) {
     await sleep(1)
     resetPegging()
     return switchTurns()
   }
   if (!game.currentHand[player].hand?.length) {
-    game.pegging.opponent = 'out'
+    if (game.pegging.opponent === 'out') {
+      awardPoints(1)
+    } else {
+      game.pegging.opponent = 'out'
+    }
   } else {
     game.pegging.opponent = ''
   }
 
   switchTurns()
-}
-
-function checkForPegPoints(card) {
-  let { value } = card
-  let cards = [...game.pegging.cards].map((c) => c.order)
-
-  // 15
-  if (game.pegging.count == 15 || game.pegging.count == 31) {
-    awardPoints(2)
-  }
-
-  // pair
-  let pairs = 0
-  while (cards.length) {
-    if (cards.pop().value == value) pairs += 1
-  }
-  if (pairs) {
-    return awardPoints(pairs * (pairs + 1))
-  }
 }
 
 function getBotsCard() {
@@ -211,11 +205,6 @@ async function resetPegging() {
   game.pegging.cards = []
   game.pegging.opponent = ''
   game.pegging.doubleGo = false
-}
-
-function awardPoints(points, player) {
-  if (!player) player = game.pegging.turn
-  game.score[player] += points
 }
 
 function removeCardFromUsersHand(card) {
