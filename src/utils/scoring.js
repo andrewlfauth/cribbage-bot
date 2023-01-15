@@ -91,7 +91,7 @@ function checkForPeggingRun() {
 }
 
 export function awardPoints(points, message) {
-  game.pegging.pointsMessage = message
+  game.pegging.pointsMessage = { message, player: game.pegging.turn }
   let player = game.pegging.turn
   game.score[player] += points
 }

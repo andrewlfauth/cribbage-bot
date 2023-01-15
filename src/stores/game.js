@@ -23,7 +23,7 @@ export const game = reactive({
     opponent: '',
     doubleGo: false,
     waitForUserCard: false,
-    pointsMessage: '',
+    pointsMessage: { message: '', player: '' },
   },
 })
 
@@ -157,7 +157,7 @@ export async function playCard(card) {
   }
   if (!game.currentHand[player].hand?.length) {
     if (game.pegging.opponent === 'out') {
-      awardPoints(1, '1 for Go')
+      awardPoints(1, '1 for Last Card')
     } else {
       game.pegging.opponent = 'out'
     }
