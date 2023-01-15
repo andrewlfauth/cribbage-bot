@@ -3,7 +3,9 @@ import { game } from '../stores/game'
 export function checkForPegPoints() {
   // 15
   if (game.pegging.count == 15 || game.pegging.count == 31) {
-    awardPoints(2)
+    game.pegging.count == 15
+      ? awardPoints(2, '15 for 2')
+      : awardPoints(2, '31 for 2')
   }
 
   checkForPeggingPairs()
@@ -23,7 +25,7 @@ function checkForPeggingPairs() {
   }
 
   if (pairs) {
-    return awardPoints(pairs * (pairs + 1))
+    return awardPoints(pairs * (pairs + 1), 'Pair for ' + pairs * (pairs + 1))
   }
 }
 
@@ -75,7 +77,10 @@ function checkForPeggingRun() {
 
   for (let i = 0; i < sliced.length; i++) {
     if (i == sliced.length - 1) {
-      return awardPoints(sliced.length)
+      return awardPoints(
+        sliced.length,
+        `Run of ${sliced.length} for ${sliced.length}`
+      )
     }
     if (sliced[i + 1] == sliced[i] + 1) {
       continue
@@ -85,7 +90,8 @@ function checkForPeggingRun() {
   }
 }
 
-export function awardPoints(points, player) {
-  if (!player) player = game.pegging.turn
+export function awardPoints(points, message) {
+  game.pegging.pointsMessage = message
+  let player = game.pegging.turn
   game.score[player] += points
 }

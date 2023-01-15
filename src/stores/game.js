@@ -23,6 +23,7 @@ export const game = reactive({
     opponent: '',
     doubleGo: false,
     waitForUserCard: false,
+    pointsMessage: '',
   },
 })
 
@@ -117,7 +118,7 @@ async function handleGo() {
     game.pegging.doubleGo = true
     await sleep(1)
     resetPegging()
-    awardPoints(1)
+    awardPoints(1, '1 for Go')
     return switchTurns()
   }
   if (game.pegging.opponent === 'out') {
@@ -147,7 +148,7 @@ export async function playCard(card) {
     checkForGo() &&
     game.pegging.count != 31
   ) {
-    awardPoints(1)
+    awardPoints(1, '1 for Go')
   }
   if (game.pegging.count === 31) {
     await sleep(1)
@@ -156,7 +157,7 @@ export async function playCard(card) {
   }
   if (!game.currentHand[player].hand?.length) {
     if (game.pegging.opponent === 'out') {
-      awardPoints(1)
+      awardPoints(1, '1 for Go')
     } else {
       game.pegging.opponent = 'out'
     }
